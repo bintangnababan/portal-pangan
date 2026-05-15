@@ -1,0 +1,8 @@
+{
+    "chat.tools.terminal.autoApprove": {
+        "/^cd /workspaces/portal-pangan && python -c \"import importlib\\.util, sys; print\\(sys\\.executable\\); print\\(importlib\\.util\\.find_spec\\('supabase'\\)\\)\"$/": {
+            "approve": true,
+            "matchCommandLine": true
+        }
+    }
+}
