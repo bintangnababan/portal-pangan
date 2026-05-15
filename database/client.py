@@ -1,3 +1,4 @@
+import os
 import streamlit as st
 from typing import TYPE_CHECKING
 
@@ -11,14 +12,23 @@ except ModuleNotFoundError as exc:
         "and ensure `supabase==2.3.4` is listed in `requirements.txt`."
     ) from exc
 
-@st.cache_resource
-def init_connection() -> "Client":
-    url = st.secrets.get("SUPABASE_URL")
-    key = st.secrets.get("SUPABASE_KEY")
+
+def get_supabase_credentials() -> tuple[str, str]:
+    url = st.secrets.get("SUPABASE_URL") or os.getenv("SUPABASE_URL")
+    key = st.secrets.get("SUPABASE_KEY") or os.getenv("SUPABASE_KEY")
     if not url or not key:
         raise RuntimeError(
-            "Supabase credentials are missing. Add SUPABASE_URL and SUPABASE_KEY to Streamlit secrets."
+            "Supabase credentials are missing. Add SUPABASE_URL and SUPABASE_KEY to Streamlit secrets "
+            "or set them as environment variables."
         )
+    return url, key
+
+
+@st.cache_resource
+def init_connection() -> "Client":
+    url, key = get_supabase_credentials()
     return create_client(url, key)
 
-db = init_connection()
+
+def get_db() -> "Client":
+    return init_connection()

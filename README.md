@@ -87,6 +87,7 @@ Isi secrets.toml dengan URL dan API Key dari proyek Supabase Anda:
 Ini, TOML
 SUPABASE_URL = "https://<id-proyek-anda>.supabase.co"
 SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR..."
+> Catatan: `.streamlit/secrets.toml` diabaikan oleh Git. Untuk deploy di Streamlit Cloud, letakkan `SUPABASE_URL` dan `SUPABASE_KEY` di bagian App secrets pada dashboard Streamlit Anda.
 5. Jalankan Aplikasi
 Bash
 streamlit run app.py
