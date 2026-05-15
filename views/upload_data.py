@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-from database.client import db
+from database.client import get_db
 
 st.markdown('<h1 class="main-header">⚙️ Data Ingestion System</h1>', unsafe_allow_html=True)
 st.markdown('<p class="subtitle">Modul admin untuk memperbarui database Supabase via Excel/CSV.</p>', unsafe_allow_html=True)
@@ -35,6 +35,7 @@ if uploaded_file is not None:
                 # Chunking Insert (500 baris per batch agar tidak timeout)
                 chunk_size = 500
                 progress_bar = st.progress(0)
+                db = get_db()
                 
                 for i in range(0, len(records), chunk_size):
                     chunk = records[i:i + chunk_size]

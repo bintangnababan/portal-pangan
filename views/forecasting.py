@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 import plotly.graph_objects as go
-from database.client import db
+from database.client import get_db
 
 # 1. CUSTOM CSS (Konsisten dengan Dashboard Utama)
 def inject_forecast_css():
@@ -33,12 +33,21 @@ st.markdown("Analisis prediktif menggunakan *Facebook Prophet AI* untuk memitiga
 # 3. DATA FETCHING
 @st.cache_data(ttl=3600)
 def fetch_all_data():
-    # Ambil Historis (30 hari terakhir saja untuk perbandingan)
-    hist_resp = db.table("harga_pangan").select("tanggal, nama_komoditas, harga").execute()
-    # Ambil Prediksi
-    fore_resp = db.table("prediksi_harga").select("*").execute()
-    return hist_resp.data, fore_resp.data
+    try:
+        db = get_db()
+        # Ambil Historis (30 hari terakhir saja untuk perbandingan)
+        hist_resp = db.table("harga_pangan").select("tanggal, nama_komoditas, harga").execute()
+        # Ambil Prediksi
+        fore_resp = db.table("prediksi_harga").select("*").execute()
+        return hist_resp.data, fore_resp.data
+    except RuntimeError as e:
+        st.error(str(e))
+        return [], []
+    except Exception as e:
+        st.error(f"Database Error: {e}")
+        return [], []
 
+# Render halaman hanya setelah semua Streamlit komponen terdefinisi
 raw_hist, raw_fore = fetch_all_data()
 
 if not raw_fore:

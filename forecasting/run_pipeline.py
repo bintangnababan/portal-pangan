@@ -1,6 +1,6 @@
 import pandas as pd
 from forecasting.prophet_engine import train_and_predict
-from database.client import db
+from database.client import get_db
 
 def execute_forecasting_pipeline(df_historis, pred_days=30, progress_callback=None):
     """
@@ -48,6 +48,7 @@ def execute_forecasting_pipeline(df_historis, pred_days=30, progress_callback=No
                 })
             
             # 6. Upsert ke Database
+            db = get_db()
             db.table("prediksi_harga").upsert(records, on_conflict="tanggal,nama_komoditas,provinsi").execute()
             
             berhasil += 1
